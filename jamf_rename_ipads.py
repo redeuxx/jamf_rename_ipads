@@ -63,7 +63,12 @@ def send_rename_command(token, management_id, new_name):
         },
     )
     if resp.status_code not in (200, 201):
-        print(f"    HTTP {resp.status_code}: {resp.text[:400]}")
+        try:
+            errs = resp.json().get("errors", [])
+            detail = errs[0].get("description") if errs else resp.text[:200]
+        except Exception:
+            detail = resp.text[:200]
+        print(f"    HTTP {resp.status_code}: {detail}")
     return resp.status_code in (200, 201)
 
 

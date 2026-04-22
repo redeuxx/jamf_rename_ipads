@@ -30,7 +30,8 @@ def get_token(client_secret):
     )
     resp.raise_for_status()
     data = resp.json()
-    expires_at = time.time() + data.get("expires_in", 1800) - 60
+    expires_in = data.get("expires_in", 1800)
+    expires_at = time.time() + expires_in - min(60, expires_in // 4)
     return data["access_token"], expires_at
 
 
